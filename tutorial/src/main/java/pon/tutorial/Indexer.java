@@ -17,9 +17,10 @@ import org.apache.lucene.store.FSDirectory;
 public class Indexer {
    private IndexWriter writer;
 
+   // writer の初期化
+   // Analyzer、Writerの設定など..
    public Indexer(String indexDirectoryPath) throws IOException {
-      Directory indexDirectory = 
-         FSDirectory.open(Paths.get(indexDirectoryPath));
+      Directory indexDirectory = FSDirectory.open(Paths.get(indexDirectoryPath));
       StandardAnalyzer analyzer = new StandardAnalyzer();
       IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
       writer = new IndexWriter(indexDirectory, iwc);
@@ -29,26 +30,27 @@ public class Indexer {
       writer.close();
    }
 
+   // FileからDocumentを取得
    private Document getDocument(File file) throws IOException {
       Document document = new Document();
       TextField contentField = new TextField(LuceneConstants.CONTENTS, new FileReader(file));
-      TextField fileNameField = new TextField(LuceneConstants.FILE_NAME,
-         file.getName(),TextField.Store.YES);
-      TextField filePathField = new TextField(LuceneConstants.FILE_PATH,
-         file.getCanonicalPath(),TextField.Store.YES);
+      TextField fileNameField = new TextField(LuceneConstants.FILE_NAME, file.getName(),TextField.Store.YES);
+      TextField filePathField = new TextField(LuceneConstants.FILE_PATH, file.getCanonicalPath(),TextField.Store.YES);
       document.add(contentField);
       document.add(fileNameField);
       document.add(filePathField);
       return document;
    }   
 
+   // fileからdocument生成してwrite
    private void indexFile(File file) throws IOException {
       System.out.println("Indexing "+file.getCanonicalPath());
       Document document = getDocument(file);
       writer.addDocument(document);
    }
 
-   public int createIndex(String dataDirPath, FileFilter filter) 
+   // ディレクトリとファイルフィルターを指定して転値インデックスを作成
+   public int createIndex(String dataDirPath) 
       throws IOException {
       File[] files = new File(dataDirPath).listFiles();
       for (File file : files) {
@@ -56,7 +58,6 @@ public class Indexer {
             && !file.isHidden()
             && file.exists()
             && file.canRead()
-            && filter.accept(file)
          ){
             indexFile(file);
          }
