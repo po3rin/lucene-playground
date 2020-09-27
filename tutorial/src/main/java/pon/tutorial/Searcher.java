@@ -31,15 +31,14 @@ public class Searcher {
       indexSearcher = new IndexSearcher(reader);
 
       // queryParser
-      queryParser = new QueryParser(LuceneConstants.CONTENTS,
-         new StandardAnalyzer());
+      queryParser = new QueryParser("contents", new StandardAnalyzer());
    }
    
    // クエリをパースしてsearchの実行
    public TopDocs search(String searchQuery) 
       throws IOException, ParseException {
       query = queryParser.parse(searchQuery);
-      return indexSearcher.search(query, LuceneConstants.MAX_SEARCH);
+      return indexSearcher.search(query, 10);
    }
 
    // documentを取得

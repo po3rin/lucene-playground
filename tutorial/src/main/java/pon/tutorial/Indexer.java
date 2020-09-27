@@ -1,7 +1,6 @@
 package pon.tutorial;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -33,9 +32,9 @@ public class Indexer {
    // FileからDocumentを取得
    private Document getDocument(File file) throws IOException {
       Document document = new Document();
-      TextField contentField = new TextField(LuceneConstants.CONTENTS, new FileReader(file));
-      TextField fileNameField = new TextField(LuceneConstants.FILE_NAME, file.getName(),TextField.Store.YES);
-      TextField filePathField = new TextField(LuceneConstants.FILE_PATH, file.getCanonicalPath(),TextField.Store.YES);
+      TextField contentField = new TextField("contents", new FileReader(file));
+      TextField fileNameField = new TextField("filename", file.getName(), TextField.Store.YES);
+      TextField filePathField = new TextField("filepath", file.getCanonicalPath(), TextField.Store.YES);
       document.add(contentField);
       document.add(fileNameField);
       document.add(filePathField);
@@ -50,18 +49,13 @@ public class Indexer {
    }
 
    // ディレクトリとファイルフィルターを指定して転値インデックスを作成
-   public int createIndex(String dataDirPath) 
-      throws IOException {
+   public int createIndex(String dataDirPath) throws IOException {
       File[] files = new File(dataDirPath).listFiles();
       for (File file : files) {
-         if(!file.isDirectory()
-            && !file.isHidden()
-            && file.exists()
-            && file.canRead()
-         ){
+         if(!file.isDirectory() && file.exists() && file.canRead()){
             indexFile(file);
          }
       }
-	return writer.numRamDocs();
+      return writer.numRamDocs();
    }
 } 

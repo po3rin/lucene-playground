@@ -6,7 +6,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
-public class LuceneTester {
+public class TryLucene {
    String indexDir = "./index/";
    String dataDir = "./data/";
    Indexer indexer;
@@ -14,9 +14,9 @@ public class LuceneTester {
 
    // エントリポイント
    public static void main(String[] args) {
-      LuceneTester tester;
+      TryLucene tester;
       try {
-         tester = new LuceneTester();
+         tester = new TryLucene();
          tester.createIndex();
          tester.search("clock");
       } catch (IOException e) {
@@ -46,7 +46,7 @@ public class LuceneTester {
       for(ScoreDoc scoreDoc : hits.scoreDocs) {
          Document doc = searcher.getDocument(scoreDoc);
             System.out.println("File: "
-            + doc.get(LuceneConstants.FILE_PATH));
+            + doc.get("filepath"));
       }  
    }
 }
