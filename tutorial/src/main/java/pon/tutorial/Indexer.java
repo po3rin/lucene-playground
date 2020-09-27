@@ -12,6 +12,8 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.index.LogDocMergePolicy;
+import org.apache.lucene.index.LogMergePolicy;
 
 public class Indexer {
    private IndexWriter writer;
@@ -21,8 +23,19 @@ public class Indexer {
    public Indexer(String indexDirectoryPath) throws IOException {
       Directory indexDirectory = FSDirectory.open(Paths.get(indexDirectoryPath));
       StandardAnalyzer analyzer = new StandardAnalyzer();
-      IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
-      writer = new IndexWriter(indexDirectory, iwc);
+      IndexWriterConfig config = new IndexWriterConfig(analyzer);
+
+	// policyの設定
+	LogMergePolicy policy = new LogDocMergePolicy();
+
+	// 一度にマージされるセグメントの数であるマージ係数
+	policy.setMergeFactor(10);
+	config.setMergePolicy(policy);
+
+	// メモリバッファに格納できる最大ドキュメント数
+	config.setMaxBufferedDocs(10);
+
+      writer = new IndexWriter(indexDirectory, config);
    }
 
    public void close() throws CorruptIndexException, IOException {
