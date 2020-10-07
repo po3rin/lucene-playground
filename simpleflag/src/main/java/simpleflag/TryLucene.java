@@ -5,6 +5,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 
 public class TryLucene {
    String indexDir = "./index/";
@@ -23,6 +24,8 @@ public class TryLucene {
          e.printStackTrace();
       } catch (ParseException e) {
          e.printStackTrace();
+      } catch (InvalidTokenOffsetsException e) {
+         e.printStackTrace();
       }
    }
 
@@ -37,7 +40,7 @@ public class TryLucene {
    }
 
    // search
-   private void search(String searchQuery) throws IOException, ParseException {
+   private void search(String searchQuery) throws IOException, ParseException, InvalidTokenOffsetsException {
       searcher = new Searcher(indexDir);
       TopDocs hits = searcher.search(searchQuery);
    
