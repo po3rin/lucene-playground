@@ -53,6 +53,13 @@
         <artifactId>lucene-highlighter</artifactId>
         <version>8.6.2</version>
     </dependency>
+
+    <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-analyzers-kuromoji</artifactId>
+        <version>8.6.2</version>
+    </dependency>
+
   </dependencies>
 
   <build>
