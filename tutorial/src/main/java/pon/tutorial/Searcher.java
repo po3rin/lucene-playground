@@ -21,7 +21,7 @@ public class Searcher {
    IndexSearcher indexSearcher;
    QueryParser queryParser;
    Query query;
-   
+  
    // indexSearcher, queryParserなどを初期化
    public Searcher(String indexDirectoryPath) throws IOException {
       Directory indexDirectory = FSDirectory.open(Paths.get(indexDirectoryPath));
