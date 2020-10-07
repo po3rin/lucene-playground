@@ -50,6 +50,7 @@ public class TryLucene {
          Document doc = searcher.getDocument(scoreDoc);
             System.out.println("File: "
             + doc.get("filepath"));
+	    searcher.highlight(scoreDoc);
       }
    }
 }

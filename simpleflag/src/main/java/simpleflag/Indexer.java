@@ -2,6 +2,7 @@ package simpleflag;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Paths;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -44,15 +45,27 @@ public class Indexer {
 
    // FileからDocumentを取得
    private Document getDocument(File file) throws IOException {
-      Document document = new Document();
-      TextField contentField = new TextField("contents", new FileReader(file));
-      TextField fileNameField = new TextField("filename", file.getName(), TextField.Store.YES);
-      TextField filePathField = new TextField("filepath", file.getCanonicalPath(), TextField.Store.YES);
-      document.add(contentField);
-      document.add(fileNameField);
-      document.add(filePathField);
-      return document;
-   }   
+	Document document = new Document();
+	BufferedReader reader = new BufferedReader(new FileReader(file));
+	StringBuffer buf = new StringBuffer();
+
+	try {
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+		    line = line.trim();
+		    buf.append(line + " ");
+		}
+	} finally {
+		reader.close();
+	}
+	TextField contentField = new TextField("contents", buf.toString() , TextField.Store.YES);
+	TextField fileNameField = new TextField("filename", file.getName(), TextField.Store.YES);
+	TextField filePathField = new TextField("filepath", file.getCanonicalPath(), TextField.Store.YES);
+	document.add(contentField);
+	document.add(fileNameField);
+	document.add(filePathField);
+	return document;
+   } 
 
    // fileからdocument生成してwrite
    private void indexFile(File file) throws IOException {

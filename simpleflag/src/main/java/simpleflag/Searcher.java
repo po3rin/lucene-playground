@@ -37,6 +37,8 @@ public class Searcher {
    Query query;
    IndexReader reader;
    Analyzer analyzer;
+   Highlighter highlighter;
+   Formatter formatter;
    
    // indexSearcher, queryParserなどを初期化
    public Searcher(String indexDirectoryPath) throws IOException {
@@ -49,46 +51,17 @@ public class Searcher {
       analyzer = new StandardAnalyzer();
       // queryParser
       queryParser = new QueryParser("contents", analyzer);
+
+      formatter = new SimpleHTMLFormatter();
    }
    
    // クエリをパースしてsearchの実行。そしてハイライトを標準出力
    public TopDocs search(String searchQuery) 
-      throws IOException, ParseException, InvalidTokenOffsetsException {
+      throws IOException, ParseException, InvalidTokenOffsetsException{
 
          // 検索
          query = queryParser.parse(searchQuery);
-         TopDocs hits = indexSearcher.search(query, 10);
-         
-         // ハイライト
-         Formatter formatter = new SimpleHTMLFormatter();
-         QueryScorer scorer = new QueryScorer(query, "contents");
-         Highlighter highlighter = new Highlighter(formatter, scorer);
-
-         Fragmenter fragmenter = new SimpleSpanFragmenter(scorer);
-         highlighter.setTextFragmenter(fragmenter);
-
-         for (int i = 0; i < hits.scoreDocs.length; i++) {
-            int docid = hits.scoreDocs[i].doc;
-            Document doc = indexSearcher.doc(docid);
-            String text = doc.get("contents");
-
-	    TokenStream stream = analyzer.tokenStream("contents", text);
-	    stream.reset();
-
-	    while (stream.incrementToken()){
-		System.out.println(stream);
-	    }
-
-            String[] frags = highlighter.getBestFragments(stream, text, 1);
-            for (String frag : frags) {
-               System.out.println("    " + frag);
-            }
-
-	    stream.close();
-	 }
-
-	 analyzer.close();
-         return hits;
+         return indexSearcher.search(query, 10);
    }
 
    // documentを取得
@@ -96,4 +69,25 @@ public class Searcher {
       throws CorruptIndexException, IOException {
       return indexSearcher.doc(scoreDoc.doc);	
    }
+
+   public void highlight(ScoreDoc scoreDoc)
+	throws CorruptIndexException, IOException , InvalidTokenOffsetsException{
+		QueryScorer scorer = new QueryScorer(query, "contents");
+		Highlighter highlighter = new Highlighter(formatter, scorer);
+
+		Fragmenter fragmenter = new SimpleSpanFragmenter(scorer);
+		highlighter.setTextFragmenter(fragmenter);
+
+		Document doc = indexSearcher.doc(scoreDoc.doc);
+
+		String text = doc.get("contents");
+
+		TokenStream stream = analyzer.tokenStream("contents", text);
+		String[] frags = highlighter.getBestFragments(stream, text, 1);
+		for (String frag : frags) {
+			System.out.println("    " + frag);
+		}
+
+		stream.close();
+	}
 }
