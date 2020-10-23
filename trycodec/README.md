@@ -30,3 +30,4 @@ Cordec を作成するときに、これらの9つの形式すべてを実装す
 
 Codecの重要な特性の1つは、読み取り時に自身をインスタンス化するために必要なすべてのものをインデックスにエンコードする必要があることです。LuceneはセグメントファイルからCodecの名前を読み取り、JavaのSPIを使用してCodecインスタンスを取得し、そのCodecインスタンスを使用してすべてにアクセスします。
 
+https://opensourceconnections.com/blog/2013/06/05/build-your-own-lucene-codec/
