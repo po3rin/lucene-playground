@@ -26,16 +26,31 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
-    <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-core</artifactId>
-        <version>8.6.2</version>
-    </dependency>
+	<!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
+	<dependency>
+		<groupId>org.apache.lucene</groupId>
+		<artifactId>lucene-core</artifactId>
+		<version>8.6.2</version>
+	</dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-codecs -->
+	<dependency>
+		<groupId>org.apache.lucene</groupId>
+		<artifactId>lucene-codecs</artifactId>
+		<version>8.6.2</version>
+		<scope>test</scope>
+	</dependency>
+
 
   </dependencies>
 
   <build>
+	<resources>
+		<resource>
+			<directory>src/main/resources/services</directory>
+			<targetPath>META-INF/services</targetPath>
+		</resource>
+	</resources>
+
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
         <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
